@@ -44,12 +44,10 @@ ax_cam.axis("off")
 ax_cam.set_title("Front Camera with Annotations")
 
 def get_lidar_points(sample_token):
-    """Load LiDAR point cloud for a given sample token in ego frame."""
     sample = nusc.get('sample', sample_token)
     sd_record = nusc.get('sample_data', sample['data']['LIDAR_TOP'])
     pc = LidarPointCloud.from_file(os.path.join(nusc.dataroot, sd_record['filename']))
 
-    # Transform into ego car frame
     cs_record = nusc.get('calibrated_sensor', sd_record['calibrated_sensor_token'])
     pc.rotate(Quaternion(cs_record['rotation']).rotation_matrix)
     pc.translate(np.array(cs_record['translation']))
